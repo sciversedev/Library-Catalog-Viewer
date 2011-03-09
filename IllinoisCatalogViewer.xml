@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--   
+    Copyright (c) 2011 bishoff2@illinois.edu
+   
+    MIT License 
+   
+    Permission is hereby granted, free of charge, to any person obtaining a copy 
+    of this software and associated documentation files (the "Software"), to deal 
+    in the Software without restriction, including without limitation the rights 
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+    copies of the Software, and to permit persons to whom the Software is 
+    furnished to do so, subject to the following conditions: 
+   
+    The above copyright notice and this permission notice shall be included in 
+    all copies or substantial portions of the Software. 
+   
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+    THE SOFTWARE. 
+--> 
+<Module>
+    <ModulePrefs title="catalog_gadget" 
+      author_email="bishoff2@illinois.edu"
+      description="&lt;p&gt;This application broadcasts the user&#39;s search terms to the 
+      University of Illinois VuFind online catalog and displays relevant catalog results 
+      alongside the results of the SciVerse Hub search.  This utilizes custom VuFind APIs 
+      developed at the University of Illinois Library; if you are interested in setting up
+      a Sciverse / VuFind application for your institution, you can contact 
+      bishoff2@illinois.edu for additional details.&lt;/p&gt;&lt;br/&gt;      
+      &lt;p&gt;The application takes the user search terms, sends them to UIUC&#39;s VuFind instance,
+      and returns a formatted results list.  Clicking any results will open the Illinois VuFind
+      Catalog in a new window, where a user may request an item or continue searching.&lt;/p&gt;
+      &lt;br/&gt;&lt;p&gt;The target audience for this service is anyone affiliated with the University of 
+      Illinois; however, we are more than willing to share the code for our APIs with any 
+      interested institution.  To learn more about how this application was built please read
+      the technical app description.&lt;/p&gt;&lt;br/&gt; &lt;p&gt;This application is optimized to run on FireFox and IE8.&lt;/p&gt; ">
+        <Require feature="opensocial-0.9" />
+        <Require feature="minimessage" />
+        <Require feature="skins" />
+        <Require feature="tabs" />
+        <Require feature="sciverse" />
+        <Require feature="dynamic-height"/>
+    </ModulePrefs>
+    <Content type="html" view="canvas"><![CDATA[
+
+<!-- The code for Canvas view is here. -->
+<div id='content_div' style=''>Searching VuFind...</div>
+ <script type="text/javascript">
+ 
+  //start doing everything
+gadgets.sciverse.getContextInfo(contextCallback);
+
+ //get search query, send it on to VuFind 
+function contextCallback(obj){
+  		k = obj.searchQuery;
+  		var q  = String(k);
+  		var firstparen = q.indexOf("(");
+  		var lastparen = q.lastIndexOf(")");
+  		q= q.slice(firstparen+1, lastparen);
+  		getVu2(q);
+  	};
+
+ function getVu2(query){
+    var params = {};  
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+    var url = "http://search.grainger.uiuc.edu/searchaid3/resultsstyled.asp?lookfor=" + escape(query) + "&type=all&search=new&start_over=1";
+    makeCachedRequest(url, response, params, 0);
+  }
+ 
+ //borrowed from google to fix cacheing problem--this is the go-get-a-url function
+ function makeCachedRequest(url, callback, params, refreshInterval) {
+  var ts = new Date().getTime();
+  var sep = "?";
+  if (refreshInterval && refreshInterval > 0) {
+    ts = Math.floor(ts / (refreshInterval * 1000));
+  }
+  if (url.indexOf("?") > -1) {
+    sep = "&";
+  }
+  url = [ url, sep, "nocache=", ts ].join("");
+  gadgets.io.makeRequest(url, callback, params);
+}
+
+ //so links pop up in new windows
+function makePopUp(AnchorTag) {
+			newwindow=window.open(AnchorTag,'window'+ Math.floor(Math.random()* 1001),'toolbar=1,scrollbars=1,title=1,location=1,status=1,statusbar=1,menubar=1,resizable=1,width=900,height=700,left='+(Math.floor(Math.random()*200))+',top='+(Math.floor(Math.random()*100)));
+			if (window.focus) {newwindow.focus()}
+			return false;};
+  
+  // Callback function to process the response
+  function response(obj) {               
+    var responseText = obj.text;  
+    document.getElementById('content_div').innerHTML = responseText;
+    gadgets.window.adjustHeight();
+  }
+
+  </script>
+  	  	
+  	
+
+
+  ]]></Content>
+    <Content type="html" view="profile"><![CDATA[
+
+<!-- The code for Profile view is here. -->
+<div id='content_div' style=''>Searching VuFind...</div>
+ <script type="text/javascript">
+ 
+  //start doing everything
+gadgets.sciverse.getContextInfo(contextCallback);
+
+ //get search query, send it on to VuFind function
+function contextCallback(obj){
+  		k = obj.searchQuery;
+  		var q  = String(k);
+  		var firstparen = q.indexOf("(");
+  		var lastparen = q.lastIndexOf(")");
+  		q= q.slice(firstparen+1, lastparen);
+  		getVu2(q);
+  	};
+
+ function getVu2(query){
+    var params = {};  
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+    var url = "http://search.grainger.uiuc.edu/searchaid3/resultsstyled.asp?lookfor=" + escape(query) + "&type=all&search=new&start_over=1";
+    makeCachedRequest(url, response, params, 0);
+  }
+ 
+ //borrowed from google to fix cacheing problem--this is the go-get-a-url function
+ function makeCachedRequest(url, callback, params, refreshInterval) {
+  var ts = new Date().getTime();
+  var sep = "?";
+  if (refreshInterval && refreshInterval > 0) {
+    ts = Math.floor(ts / (refreshInterval * 1000));
+  }
+  if (url.indexOf("?") > -1) {
+    sep = "&";
+  }
+  url = [ url, sep, "nocache=", ts ].join("");
+  gadgets.io.makeRequest(url, callback, params);
+}
+
+ //so links pop up in new windows
+function makePopUp(AnchorTag) {
+			newwindow=window.open(AnchorTag,'window'+ Math.floor(Math.random()* 1001),'toolbar=1,scrollbars=1,title=1,location=1,status=1,statusbar=1,menubar=1,resizable=1,width=900,height=700,left='+(Math.floor(Math.random()*200))+',top='+(Math.floor(Math.random()*100)));
+			if (window.focus) {newwindow.focus()}
+			return false;};
+  
+  // Callback function to process the response
+  function response(obj) {               
+    var responseText = obj.text;  
+    document.getElementById('content_div').innerHTML = responseText;
+    gadgets.window.adjustHeight(350);
+  }
+
+  </script>
+  	  	
+  	
+
+  ]]></Content>
+    <Content type="html" view="sciverseResultsView"><![CDATA[
+
+<!-- The code for Sciverse Results View view is here. -->
+<div id='content_div' style=''>Searching VuFind...</div>
+ <script type="text/javascript">
+ 
+  //start doing everything
+gadgets.sciverse.getContextInfo(contextCallback);
+
+ //get search query, send it on to VuFind function
+function contextCallback(obj){
+  		k = obj.searchQuery;
+  		var q  = String(k);
+  		var firstparen = q.indexOf("(");
+  		var lastparen = q.lastIndexOf(")");
+  		q= q.slice(firstparen+1, lastparen);
+  		getVu2(q);
+  	};
+
+ function getVu2(query){
+    var params = {};  
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+    var url = "http://search.grainger.uiuc.edu/searchaid3/resultsstyled.asp?lookfor=" + escape(query) + "&type=all&search=new&start_over=1";
+    makeCachedRequest(url, response, params, 0);
+  }
+ 
+ //borrowed from google to fix cacheing problem--this is the go-get-a-url function
+ function makeCachedRequest(url, callback, params, refreshInterval) {
+  var ts = new Date().getTime();
+  var sep = "?";
+  if (refreshInterval && refreshInterval > 0) {
+    ts = Math.floor(ts / (refreshInterval * 1000));
+  }
+  if (url.indexOf("?") > -1) {
+    sep = "&";
+  }
+  url = [ url, sep, "nocache=", ts ].join("");
+  gadgets.io.makeRequest(url, callback, params);
+}
+
+ //so links pop up in new windows
+function makePopUp(AnchorTag) {
+			newwindow=window.open(AnchorTag,'window'+ Math.floor(Math.random()* 1001),'toolbar=1,scrollbars=1,title=1,location=1,status=1,statusbar=1,menubar=1,resizable=1,width=900,height=700,left='+(Math.floor(Math.random()*200))+',top='+(Math.floor(Math.random()*100)));
+			if (window.focus) {newwindow.focus()}
+			return false;};
+  
+  // Callback function to process the response
+  function response(obj) {               
+    var responseText = obj.text;  
+    document.getElementById('content_div').innerHTML = responseText;
+    gadgets.window.adjustHeight(350);
+  }
+
+  </script>
+  	  	
+  	
+
+
+  ]]></Content>
+</Module>

@@ -1,0 +1,14 @@
+SciVerse Gallery - Illinois Catalog Viewer - Application Detail page
+http://www.applications.sciverse.com/action/appDetail/292652
+
+Source code was made available by the University of Illinois Library. We kindly ask you to recognize their work and contribution.
+
+Overview
+
+This application broadcasts the user's search terms to the University of Illinois VuFind online catalog and displays relevant catalog results alongside the results of the SciVerse Hub search. This utilizes custom VuFind APIs developed at the University of Illinois Library; if you are interested in setting up a Sciverse / VuFind application for your institution, you can contact bishoff2@illinois.edu for additional details.
+
+The application takes the user search terms, sends them to UIUC's VuFind instance, and returns a formatted results list. Clicking any results will open the Illinois VuFind Catalog in a new window, where a user may request an item or continue searching.
+
+The target audience for this service is anyone affiliated with the University of Illinois; however, we are more than willing to share the code for our APIs with any interested institution. To learn more about how this application was built please read the technical app description.
+
+This application is optimized to run on FireFox and IE8.
